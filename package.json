@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Pulls random image from imgur.com API",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "serve": "nodemon server.js"
   },
   "keywords": [
     "random",
@@ -18,13 +18,18 @@
     "babel-loader": "^6.2.5",
     "babel-plugin-transform-runtime": "^6.15.0",
     "babel-preset-es2015": "^6.16.0",
+    "babel-preset-react-hmre": "^1.1.1",
     "eslint": "^3.7.1",
     "eslint-plugin-react": "^6.3.0",
+    "nodemon": "^1.10.2",
     "webpack": "^1.13.2",
-    "webpack-dev-server": "^1.16.1"
+    "webpack-dev-middleware": "^1.8.3",
+    "webpack-dev-server": "^1.16.1",
+    "webpack-hot-middleware": "^2.12.2"
   },
   "dependencies": {
     "babel-polyfill": "^6.16.0",
-    "babel-runtime": "^6.11.6"
+    "babel-runtime": "^6.11.6",
+    "express": "^4.14.0"
   }
 }

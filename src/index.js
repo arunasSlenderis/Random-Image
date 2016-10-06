@@ -1,3 +1,3 @@
 import test from "./test/test";
-console.log("works");
+console.log("works like a gloves!!!!!");
 test();
