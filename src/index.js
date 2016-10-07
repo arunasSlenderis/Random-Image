@@ -1,3 +1,9 @@
-import test from "./test/test";
-console.log("works like a gloves!!!!!");
-test();
+import React from "react";  // eslint-disable-line no-unused-vars
+import { render } from "react-dom";
+
+import App from "./components/App"; // eslint-disable-line no-unused-vars
+
+render(
+  <App />,
+  document.getElementById("app")
+);
