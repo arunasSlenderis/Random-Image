@@ -21,6 +21,9 @@ app.use(webpackHotMiddleware(compiler));
 
 app.use(express.static("./dist"));
 
-app.use("/", (req, res) => res.sendFile(path.resolve("src/index.html")));
+app.get("/", (req, res) => res.sendFile(path.resolve("src/index.html")));
 
-app.listen(PORT, () => console.log(`Server is listening on port: ${PORT}`));
+app.listen(PORT, error => {
+  if(error) throw new Error("Server fault: ", error);
+  console.log(`Server is listening on port: ${PORT}`);
+});
