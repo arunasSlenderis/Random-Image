@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "nodemon server.js --ignore src/components",
     "prod": "node prodServer.js",
-    "start": "node server.js"
+    "start": "node prodServer.js"
   },
   "keywords": [
     "random",
@@ -33,22 +33,16 @@
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.2",
-    "webpack-dev-middleware": "^1.8.3",
-    "webpack-hot-middleware": "^2.12.2"
+    "webpack-dev-middleware": "^1.8.4",
+    "webpack-hot-middleware": "^2.13.0"
   },
   "dependencies": {
-    "babel-cli": "^6.16.0",
-    "babel-core": "^6.17.0",
-    "babel-loader": "^6.2.5",
     "babel-polyfill": "^6.16.0",
     "babel-runtime": "^6.11.6",
     "express": "^4.14.0",
     "font-awesome": "^4.6.3",
     "jquery": "^3.1.1",
     "react": "^15.3.2",
-    "react-dom": "^15.3.2",
-    "webpack": "^1.13.2",
-    "webpack-dev-middleware": "^1.8.4",
-    "webpack-hot-middleware": "^2.13.0"
+    "react-dom": "^15.3.2"
   }
 }
