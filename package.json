@@ -4,7 +4,8 @@
   "description": "Pulls random image from imgur.com API",
   "scripts": {
     "serve": "nodemon server.js --ignore src/components",
-    "prod": "node prodServer.js"
+    "prod": "node prodServer.js",
+    "start": "node server.js"
   },
   "keywords": [
     "random",
