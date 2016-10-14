@@ -31,25 +31,38 @@ app.get("/", (req, res) => {
 });
 
 app.post("/", (req) => {
-  db.like.findOne({
+  db.like.findOne({   //finds match with liked image
     where: {
       imageId: req.body.imageId
     }
   })
   .then(likeInstance => {
     if(likeInstance) {
-      db.usersIP.findOne({
+      db.usersIP.findAll({
         where: {
           imageId: req.body.imageId
         }
       })
       .then(usersIpInstance => {
-        if(usersIpInstance.liked === false) {
-          likeInstance.update({
-            likes: likeInstance.get("likes") + 1
+        if(usersIpInstance) {
+          const user = usersIpInstance.find(user => {
+            return user.ip === req.body.ip;
           });
-          usersIpInstance.update({
-            liked: true
+          if(!user) {
+            db.usersIP.create({
+              imageId: req.body.imageId,
+              liked: true,
+              ip: req.body.ip
+            });
+            likeInstance.update({
+              likes: likeInstance.get("likes") + 1
+            });
+          }
+        } else {
+          db.usersIP.create({
+            imageId: req.body.imageId,
+            liked: true,
+            ip: req.body.ip
           });
         }
       });
@@ -60,7 +73,7 @@ app.post("/", (req) => {
       });
       db.usersIP.create({
         imageId: req.body.imageId,
-        liked: false,
+        liked: true,
         ip: req.body.ip
       });
     }

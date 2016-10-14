@@ -64,7 +64,7 @@ export default class App extends Component {
     $.ajax({
       url: "/",
       type: "POST",
-      data: { imageId: this.state.imageId, likes: 1, ip: this.state.ip },
+      data: { imageId: this.state.imageId, likes: 1, ip: "42"/*this.state.ip*/ },
       success(data) {
         console.log(`Success ${data}`);
       },
@@ -75,10 +75,10 @@ export default class App extends Component {
   }
 
   getIP() {
-    $.getJSON("//api.ipify.org?format=jsonp&callback=?", ip => {
-      let userIP = ip.ip;
-      this.setState({ ip: userIP });
-    });
+    // $.getJSON("//api.ipify.org?format=jsonp&callback=?", ip => {
+      // let userIP = ip.ip;
+      // this.setState({ ip: userIP });
+    // });
   }
 
   render() {
