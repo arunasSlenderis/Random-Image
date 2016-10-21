@@ -1,13 +1,13 @@
-const express = require("express");
-const path = require("path");
-const bodyParser = require("body-parser");
+var express = require("express");
+var path = require("path");
+var bodyParser = require("body-parser");
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+var app = express();
+var PORT = process.env.PORT || 3000;
 
-const db = require("./database/db");
+var db = require("./database/db");
 
-let imageIdFromDb = "";
+var imageIdFromDb = "";
 
 app.use(express.static("./dist"));
 
