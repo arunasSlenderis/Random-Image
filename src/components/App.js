@@ -13,7 +13,8 @@ export default class App extends Component {
       image: "http://i.imgur.com/RRUe0Mo.png",
       loading: "",
       imageId: "",
-      ip: "no ip"
+      ip: "no ip",
+      likeCount: 0
     };
 
     // this.likeData = {
@@ -26,6 +27,7 @@ export default class App extends Component {
     this.getImage = this.getImage.bind(this);
     this.like = this.like.bind(this);
     this.getIP = this.getIP.bind(this);
+    this.getLikeCount = this.getLikeCount.bind(this);
   }
 
   getImage() {
@@ -61,10 +63,11 @@ export default class App extends Component {
 
   like() {
     this.getIP();
+    this.getLikeCount();
     $.ajax({
       url: "/",
       type: "POST",
-      data: { imageId: this.state.imageId, likes: 1, ip: "42"/*this.state.ip*/ },
+      data: { imageId: this.state.imageId, likes: 1, ip: "85527799"/*this.state.ip*/ },
       success(data) {
         console.log(`Success ${data}`);
       },
@@ -81,8 +84,16 @@ export default class App extends Component {
     // });
   }
 
+  getLikeCount() {
+    //get data from database
+    $.ajax({
+      url: "/data"
+    })
+    .done(data => this.setState({ likeCount: data }));
+  }
+
   render() {
-    const { loading, image, imageId } = this.state;
+    const { loading, image, imageId, likeCount } = this.state;
     return (
       <div>
         <Image
@@ -91,8 +102,8 @@ export default class App extends Component {
           imageId={ imageId }
           getImage={ this.getImage }
         />
-        <NotificationArea />
-        <Controls like={this.like}/>
+      <NotificationArea likes={ likeCount }/>
+        <Controls like={ this.like } />
       </div>
     );
   }

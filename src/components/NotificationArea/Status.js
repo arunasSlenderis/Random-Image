@@ -7,7 +7,7 @@ export default class Status extends Component {
     return (
       <ul>
         <li><i className="fa fa-eye"></i></li>
-        <li><i className="fa fa-thumbs-up"></i></li>
+        <li><i className="fa fa-thumbs-up">{this.props.likes}</i></li>
         <li><i className="fa fa-thumbs-down"></i></li>
       </ul>
     );

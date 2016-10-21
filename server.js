@@ -12,6 +12,8 @@ const app = express();
 const compiler = webpack(config);
 const PORT = process.env.PORT || 3000;
 
+let imageIdFromDb = "";
+
 app.use(webpackDevMiddleware(compiler, {
   noInfo: true,
   publicPath: config.output.publicPath,
@@ -28,9 +30,31 @@ app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
   res.sendFile(path.resolve("src/index.html"));
+  //send data of like count from db
 });
 
-app.post("/", (req) => {
+app.get("/data", (req, res) => {
+  db.like.findOne({
+    where: {
+      imageId: imageIdFromDb
+    }
+  })
+  .then(likeInstance => {
+    res.json(likeInstance.get("likes"));
+  });
+});
+
+
+app.post("/", req => {
+  imageIdFromDb = req.body.imageId;
+  const addDataToUsersIP = () => {
+    db.usersIP.create({
+      imageId: req.body.imageId,
+      liked: true,
+      ip: req.body.ip
+    });
+  };
+
   db.like.findOne({   //finds match with liked image
     where: {
       imageId: req.body.imageId
@@ -49,21 +73,13 @@ app.post("/", (req) => {
             return user.ip === req.body.ip;
           });
           if(!user) {
-            db.usersIP.create({
-              imageId: req.body.imageId,
-              liked: true,
-              ip: req.body.ip
-            });
+            addDataToUsersIP();
             likeInstance.update({
               likes: likeInstance.get("likes") + 1
             });
           }
         } else {
-          db.usersIP.create({
-            imageId: req.body.imageId,
-            liked: true,
-            ip: req.body.ip
-          });
+          addDataToUsersIP();
         }
       });
     } else {
@@ -71,11 +87,7 @@ app.post("/", (req) => {
         imageId: req.body.imageId,
         likes: req.body.likes
       });
-      db.usersIP.create({
-        imageId: req.body.imageId,
-        liked: true,
-        ip: req.body.ip
-      });
+      addDataToUsersIP();
     }
   });
 });

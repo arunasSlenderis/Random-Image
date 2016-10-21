@@ -5,7 +5,7 @@ import Status from "./Status";  // eslint-disable-line no-unused-vars
 export default class NotificationArea extends Component {
   render() {
     return (
-      <Status />
+      <Status likes={ this.props.likes }/>
     );
   }
 }
