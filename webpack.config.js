@@ -1,5 +1,5 @@
 const path = require("path");
-const webpack = require("webpack");
+// const webpack = require("webpack");
 // var fs = require("fs");
 // const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
@@ -15,7 +15,7 @@ const webpack = require("webpack");
 module.exports = {
   devtool: "inline-source-map",
   entry: [
-    "webpack-hot-middleware/client",
+    // "webpack-hot-middleware/client",
     "./src/index.js"
   ],
   output: {
@@ -24,16 +24,16 @@ module.exports = {
     publicPath: "/"
   },
   plugins: [
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin()
+    // new webpack.optimize.OccurrenceOrderPlugin(),
+    // new webpack.HotModuleReplacementPlugin(),
+    // new webpack.NoErrorsPlugin()
     // new ExtractTextPlugin("styles.css")
   ],
   module: {
     exprContextCritical: false,
     loaders: [
       { test: /\.js$/, loader: "babel", exclude: /node_modules/ },
-      { test: /\.js$/, loader: "eslint", exclude: /node_modules/ },
+      // { test: /\.js$/, loader: "eslint", exclude: /node_modules/ },
       {
         test: /\.scss$/,
         loader: "style-loader!css-loader!sass-loader",
