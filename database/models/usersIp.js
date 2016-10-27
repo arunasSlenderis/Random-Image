@@ -3,9 +3,6 @@ module.exports = (sequelize, DataTypes) => {
     imageId: {
       type: DataTypes.STRING
     },
-    liked: {
-      type: DataTypes.BOOLEAN
-    },
     ip: {
       type: DataTypes.STRING
     }

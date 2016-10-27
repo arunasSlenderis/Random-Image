@@ -4,6 +4,7 @@ const webpack = require("webpack");
 const webpackDevMiddleware = require("webpack-dev-middleware");
 const webpackHotMiddleware = require("webpack-hot-middleware");
 const bodyParser = require("body-parser");
+const chalk = require("chalk");
 
 const config = require("./webpack.config");
 const db = require("./database/db");
@@ -11,8 +12,6 @@ const db = require("./database/db");
 const app = express();
 const compiler = webpack(config);
 const PORT = process.env.PORT || 3000;
-
-let imageIdFromDb = "";
 
 app.use(webpackDevMiddleware(compiler, {
   noInfo: true,
@@ -30,75 +29,70 @@ app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
   res.sendFile(path.resolve("src/index.html"));
-  //send data of like count from db
 });
 
-app.get("/data", (req, res) => {
+app.post("/info", (req, res) => {
+  let imageId = req.body.imageId;
+  let ip = req.body.ip;
+  let liked = req.body.liked;
+
   db.like.findOne({
-    where: {
-      imageId: imageIdFromDb
-    }
+    where: { imageId }
   })
-  .then(likeInstance => {
-    res.json(likeInstance.get("likes"));
-  });
-});
+  .then(image => {
+    const data = {
+      likes: image ? image.dataValues.likes : "0"
+    };
 
-
-app.post("/", req => {
-  imageIdFromDb = req.body.imageId;
-  const addDataToUsersIP = () => {
-    db.usersIP.create({
-      imageId: req.body.imageId,
-      liked: true,
-      ip: req.body.ip
-    });
-  };
-
-  db.like.findOne({   //finds match with liked image
-    where: {
-      imageId: req.body.imageId
-    }
-  })
-  .then(likeInstance => {
-    if(likeInstance) {
-      db.usersIP.findAll({
-        where: {
-          imageId: req.body.imageId
-        }
-      })
-      .then(usersIpInstance => {
-        if(usersIpInstance) {
-          const user = usersIpInstance.find(user => {
-            return user.ip === req.body.ip;
-          });
-          if(!user) {
-            addDataToUsersIP();
-            likeInstance.update({
-              likes: likeInstance.get("likes") + 1
+    if(liked) {
+      if(!image) {
+        db.like.create({
+          imageId,
+          likes: 1
+        });
+        db.usersIP.create({
+          imageId,
+          ip
+        });
+        data.likes = 1;
+      } else {
+        db.usersIP.findAll({
+          where: { imageId }
+        })
+        .then(imagesWithIP => {
+          const imageWithIP = imagesWithIP.find(imageIP => ip === imageIP.dataValues.ip);
+          if(!imageWithIP) {
+            db.usersIP.create({
+              imageId,
+              ip
+            });
+            image.update({
+              likes: image.dataValues.likes + 1
+            })
+            .then(updatedField => {
+              data.likes = updatedField;
             });
           }
-        } else {
-          addDataToUsersIP();
-        }
-      });
+        });
+      }
+      res.send(data);
     } else {
-      db.like.create({
-        imageId: req.body.imageId,
-        likes: req.body.likes
-      });
-      addDataToUsersIP();
+      console.log("like not pressed");
+      res.send(data);
     }
+
+  })
+  .catch(error => {
+    console.log(chalk.red("Error", error));
   });
 });
-
 
 db.connection.sync({
   // force: true
 })
 .then(() => {
   app.listen(PORT, error => {
-    if(error) throw new Error("Server fault: ", error);
-    console.log(`Server is listening on port: ${PORT}`);
+    if(error) throw new Error(chalk.red("Server fault: ", error));
+    console.log(chalk.bgBlue("Server is listening on port:"), PORT);
   });
 });

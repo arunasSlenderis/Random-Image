@@ -7,8 +7,6 @@ var PORT = process.env.PORT || 3000;
 
 var db = require("./database/db");
 
-var imageIdFromDb = "";
-
 app.use(express.static("./dist"));
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -18,65 +16,19 @@ app.get("/", (req, res) => {
   res.sendFile(path.resolve("dist/index.html"));
 });
 
-app.get("/data", (req, res) => {
+app.post("/likeCount", (req, res) => {
+  let imageId = req.body.imageId;
+
   db.like.findOne({
-    where: {
-      imageId: imageIdFromDb
-    }
+    where: { imageId }
   })
-  .then(likeInstance => {
-    res.json(likeInstance.get("likes"));
+  .then(image => {
+    image ? res.send(String(image.dataValues.likes)) : res.send("0");
+  })
+  .catch(error => {
+    console.log("Error", error);
   });
 });
-
-
-app.post("/", req => {
-  imageIdFromDb = req.body.imageId;
-  const addDataToUsersIP = () => {
-    db.usersIP.create({
-      imageId: req.body.imageId,
-      liked: true,
-      ip: req.body.ip
-    });
-  };
-
-  db.like.findOne({   //finds match with liked image
-    where: {
-      imageId: req.body.imageId
-    }
-  })
-  .then(likeInstance => {
-    if(likeInstance) {
-      db.usersIP.findAll({
-        where: {
-          imageId: req.body.imageId
-        }
-      })
-      .then(usersIpInstance => {
-        if(usersIpInstance) {
-          const user = usersIpInstance.find(user => {
-            return user.ip === req.body.ip;
-          });
-          if(!user) {
-            addDataToUsersIP();
-            likeInstance.update({
-              likes: likeInstance.get("likes") + 1
-            });
-          }
-        } else {
-          addDataToUsersIP();
-        }
-      });
-    } else {
-      db.like.create({
-        imageId: req.body.imageId,
-        likes: req.body.likes
-      });
-      addDataToUsersIP();
-    }
-  });
-});
-
 
 db.connection.sync({
   // force: true
