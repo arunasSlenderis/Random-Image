@@ -114,7 +114,7 @@ app.post("/info", (req, res) => {
 });
 
 db.connection.sync({
-  // force: true
+  force: true
 })
 .then(() => {
   app.listen(PORT, error => {
