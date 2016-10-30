@@ -5,6 +5,7 @@ export default class Controls extends Component {
     return (
       <div>
         <button onClick={ this.props.like }>LIKE</button>
+        <button onClick={ this.props.dislike }>DISLIKE</button>
       </div>
     );
   }

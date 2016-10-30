@@ -9,12 +9,16 @@ export default class App extends Component {
   constructor(props) {
     super(props);
 
+    this.getIP();
+
     this.state = {
       image: "http://i.imgur.com/RRUe0Mo.png",
       loading: "",
       imageId: "",
-      ip: "no ip",
-      likeCount: 0
+      ip: "",
+      likeCount: 0,
+      dislikeCount: 0,
+      viewCount : 1
     };
 
     this.url = "https://api.imgur.com/3/gallery/random/random/";
@@ -22,6 +26,8 @@ export default class App extends Component {
     this.getImage = this.getImage.bind(this);
     this.getinfoFromDb = this.getinfoFromDb.bind(this);
     this.increaseLikes = this.increaseLikes.bind(this);
+    this.increaseDislikes = this.increaseDislikes.bind(this);
+    this.displayViews = this.displayViews.bind(this);
     this.getIP = this.getIP.bind(this);
   }
 
@@ -29,7 +35,7 @@ export default class App extends Component {
     let index = Math.floor(Math.random() * 100 / 2);
     let page = Math.floor(Math.random() * 100 / 1.69);
 
-    this.setState({ loading: "Loading...", likeButtonPressed: false });
+    this.setState({ loading: "Loading..." });
 
     $.ajax({
       url: this.url + page, //page
@@ -46,8 +52,13 @@ export default class App extends Component {
           loading: "",
           imageId: data.data[index].id
         });
-        $.when(this.getinfoFromDb(false)).done(data => {
-          this.setState({ likeCount: data.likes });
+        $.when(this.getinfoFromDb(false, false)).done(data => {
+          this.getIP();
+          this.setState({
+            likeCount: data.likes,
+            dislikeCount: data.dislikes,
+            viewCount: data.views
+          });
         });
       } else {
         this.setState({ loading: "Loading..." });
@@ -56,7 +67,7 @@ export default class App extends Component {
     });
   }
 
-  getinfoFromDb(likePressed) {
+  getinfoFromDb(likePressed, dislikePressed) {
     return $.ajax({
       url: "/info",
       type: "POST",
@@ -64,16 +75,29 @@ export default class App extends Component {
       data: JSON.stringify({
         imageId: this.state.imageId,
         ip: this.state.ip,
-        likePressed
+        likePressed,
+        dislikePressed,
+        views: this.state.viewCount
       })
     });
   }
 
   increaseLikes() {
     this.getIP();
-    $.when(this.getinfoFromDb(true)).done(data => {
+    $.when(this.getinfoFromDb(true, false)).done(data => {
       this.setState({ likeCount: data.likes });
     });
+  }
+
+  increaseDislikes() {
+    this.getIP();
+    $.when(this.getinfoFromDb(false, true)).done(data => {
+      this.setState({ dislikeCount: data.dislikes });
+    });
+  }
+
+  displayViews() {
+
   }
 
   getIP() {
@@ -83,7 +107,14 @@ export default class App extends Component {
   }
 
   render() {
-    const { loading, image, imageId, likeCount } = this.state;
+    const {
+      loading,
+      image,
+      imageId,
+      likeCount,
+      dislikeCount,
+      viewCount
+    } = this.state;
     return (
       <div>
         <Image
@@ -92,8 +123,15 @@ export default class App extends Component {
           imageId={ imageId }
           getImage={ this.getImage }
         />
-      <NotificationArea likes={ likeCount }/>
-        <Controls like={ this.increaseLikes }/>
+        <NotificationArea
+          views={ viewCount }
+          likes={ likeCount }
+          dislikes={ dislikeCount }
+        />
+        <Controls
+          like={ this.increaseLikes }
+          dislike={ this.increaseDislikes }
+        />
       </div>
     );
   }

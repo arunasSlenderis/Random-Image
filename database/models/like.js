@@ -5,6 +5,12 @@ export default (sequelize, DataTypes) => {
     },
     likes: {
       type: DataTypes.INTEGER
+    },
+    dislikes: {
+      type: DataTypes.INTEGER
+    },
+    views: {
+      type: DataTypes.INTEGER
     }
   });
 };

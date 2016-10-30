@@ -5,6 +5,9 @@ export default (sequelize, DataTypes) => {
     },
     ip: {
       type: DataTypes.STRING
+    },
+    liked_disliked : {
+      type: DataTypes.BOOLEAN
     }
   });
 };
