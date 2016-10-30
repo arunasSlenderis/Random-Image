@@ -17,16 +17,16 @@ app.get("/", (req, res) => {
 });
 
 app.post("/info", (req, res) => {
-  let imageId = req.body.imageId;
-  let ip = req.body.ip;
-  let likePressed = req.body.likePressed;
-  let dislikePressed = req.body.dislikePressed;
+  var imageId = req.body.imageId;
+  var ip = req.body.ip;
+  var likePressed = req.body.likePressed;
+  var dislikePressed = req.body.dislikePressed;
 
   db.like.findOne({
-    where: { imageId }
+    where: { imageId: imageId }
   })
-  .then(image => {
-    const data = {
+  .then(function(image) {
+    var data = {
       likes: image ? image.dataValues.likes : "0",
       dislikes: image ? image.dataValues.dislikes : "0",
       views : image ? image.dataValues.views : "1"
@@ -34,23 +34,23 @@ app.post("/info", (req, res) => {
 
     if(!image) {
       db.like.create({
-        imageId,
+        imageId: imageId,
         likes: 0,
         dislikes: 0,
         views: 1
       });
       db.usersIP.create({
-        imageId,
-        ip,
+        imageId: imageId,
+        ip: ip,
         liked_disliked: false
       });
       res.send(data);
     } else {
       db.usersIP.findAll({
-        where: { imageId }
+        where: { imageId: imageId }
       })
-      .then(imagesWithIP => {
-        const imageWithIP = imagesWithIP.find(imageIP => {
+      .then(function(imagesWithIP) {
+        var imageWithIP = imagesWithIP.find(imageIP => {
           return ip === imageIP.dataValues.ip;
         });
         if(imageWithIP.dataValues.liked_disliked === false) {
@@ -72,7 +72,7 @@ app.post("/info", (req, res) => {
                   :
                   image.dataValues.dislikes,
             })
-            .then(updatedField => {
+            .then(function(updatedField) {
               data.likes = updatedField.dataValues.likes;
               data.dislikes = updatedField.dataValues.dislikes;
               res.send(data);
@@ -82,7 +82,7 @@ app.post("/info", (req, res) => {
           image.update({
             views: image.dataValues.views + 1
           })
-          .then(updatedField => {
+          .then(function(updatedField) {
             data.views = updatedField.dataValues.views;
             res.send(data);
           });
