@@ -4,7 +4,7 @@
   "description": "Pulls random image from imgur.com API",
   "scripts": {
     "serve": "nodemon --exec babel-node server.js --ignore src/components",
-    "start": "babel-node prodServer.js",
+    "start": "node prodServer.js",
     "buildProd": "webpack -p --config ./webpack.prod.config.js"
   },
   "keywords": [
