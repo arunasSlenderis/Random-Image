@@ -1,11 +1,11 @@
-var express = require("express");
-var bodyParser = require("body-parser");
+import express from "express";
+import bodyParser from "body-parser";
 
-var app = express();
-var PORT = process.env.PORT || 3000;
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-var db = require("./database/db");
-const routes = require("./routes");
+import db from "./database/db";
+import * as routes from "./routes";
 
 app.use(express.static("./dist"));
 
