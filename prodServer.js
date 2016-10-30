@@ -5,7 +5,25 @@ var path = require("path");
 var app = express();
 var PORT = process.env.PORT || 3000;
 
-var db = require("./database/db");
+var Sequelize = require("sequelize");
+var env = process.env.NODE_ENV || "development";
+
+var connection;
+
+if(env === "production") { //if runs on heroku
+  connection = new Sequelize(process.env.DATABASE_URL, {
+    dialect: "postgres"
+  });
+} else {
+  connection = new Sequelize("random_images", "root", "");
+}
+
+var db = {};
+
+db.like = connection.import(__dirname + "/database/models/like_heroku.js");
+db.usersIP = connection.import(__dirname + "/database/models/usersIp_heroku.js");
+db.Sequelize = Sequelize;
+db.connection = connection;
 
 app.use(express.static("./dist"));
 
