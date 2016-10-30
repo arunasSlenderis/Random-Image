@@ -1,13 +1,14 @@
-const express = require("express");
-const path = require("path");
-const webpack = require("webpack");
-const webpackDevMiddleware = require("webpack-dev-middleware");
-const webpackHotMiddleware = require("webpack-hot-middleware");
-const bodyParser = require("body-parser");
-const chalk = require("chalk");
+import express from "express";
+import webpack from "webpack";
+import webpackDevMiddleware from "webpack-dev-middleware";
+import webpackHotMiddleware from "webpack-hot-middleware";
+import bodyParser from "body-parser";
+import chalk from "chalk";
 
-const config = require("./webpack.config");
-const db = require("./database/db");
+import config from "./webpack.config";
+// const config = require("./webpack.config");
+import db from "./database/db";
+import * as routes from "./routes";
 
 const app = express();
 const compiler = webpack(config);
@@ -27,65 +28,9 @@ app.use(express.static("./dist"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.get("/", (req, res) => {
-  res.sendFile(path.resolve("src/index.html"));
-});
+app.get("/", routes.home);
 
-app.post("/info", (req, res) => {
-  let imageId = req.body.imageId;
-  let ip = req.body.ip;
-  let liked = req.body.liked;
-
-  db.like.findOne({
-    where: { imageId }
-  })
-  .then(image => {
-    const data = {
-      likes: image ? image.dataValues.likes : "0"
-    };
-
-    if(liked) {
-      if(!image) {
-        db.like.create({
-          imageId,
-          likes: 1
-        });
-        db.usersIP.create({
-          imageId,
-          ip
-        });
-        data.likes = 1;
-      } else {
-        db.usersIP.findAll({
-          where: { imageId }
-        })
-        .then(imagesWithIP => {
-          const imageWithIP = imagesWithIP.find(imageIP => ip === imageIP.dataValues.ip);
-          if(!imageWithIP) {
-            db.usersIP.create({
-              imageId,
-              ip
-            });
-            image.update({
-              likes: image.dataValues.likes + 1
-            })
-            .then(updatedField => {
-              data.likes = updatedField;
-            });
-          }
-        });
-      }
-      res.send(data);
-    } else {
-      console.log("like not pressed");
-      res.send(data);
-    }
-
-  })
-  .catch(error => {
-    console.log(chalk.red("Error", error));
-  });
-});
+app.post("/info", routes.info);
 
 db.connection.sync({
   // force: true

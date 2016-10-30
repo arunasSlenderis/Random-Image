@@ -14,8 +14,7 @@ export default class App extends Component {
       loading: "",
       imageId: "",
       ip: "no ip",
-      likeCount: 0,
-      likeButtonPressed: false
+      likeCount: 0
     };
 
     this.url = "https://api.imgur.com/3/gallery/random/random/";
@@ -57,7 +56,7 @@ export default class App extends Component {
     });
   }
 
-  getinfoFromDb(liked) {
+  getinfoFromDb(likePressed) {
     return $.ajax({
       url: "/info",
       type: "POST",
@@ -65,13 +64,12 @@ export default class App extends Component {
       data: JSON.stringify({
         imageId: this.state.imageId,
         ip: this.state.ip,
-        liked
+        likePressed
       })
     });
   }
 
   increaseLikes() {
-    this.setState({ likeButtonPressed: true });
     this.getIP();
     $.when(this.getinfoFromDb(true)).done(data => {
       this.setState({ likeCount: data.likes });
