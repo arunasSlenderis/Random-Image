@@ -4,7 +4,7 @@ import chalk from "chalk";
 import db from "./database/db";
 
 export const home = (req, res) => {
-  res.sendFile(path.resolve("src/index.html"));
+  res.sendFile(path.resolve("./src/index.html"));
 };
 
 export const info = (req, res) => {

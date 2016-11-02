@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "description": "Pulls random image from imgur.com API",
   "scripts": {
-    "serve": "nodemon --exec babel-node server.js --ignore src/components",
-    "start": "node prodServer.js",
-    "buildProd": "webpack -p --config ./webpack.prod.config.js"
+    "dev": "nodemon --exec babel-node server.js --ignore src/components",
+    "start": "node distServer/server.js",
+    "buildFE": "webpack -p --config ./webpack.prod.config.js",
+    "buildBE": "webpack -p --config ./webpack.prod.server.config.js",
+    "prod": "npm run buildFE && npm run buildBE"
   },
   "keywords": [
     "random",

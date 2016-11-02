@@ -1,6 +1,7 @@
 import Sequelize from "sequelize";
-const env = process.env.NODE_ENV || "development";
+import path from "path";
 
+const env = process.env.NODE_ENV || "development";
 let connection;
 
 if(env === "production") { //if runs on heroku
@@ -13,8 +14,8 @@ if(env === "production") { //if runs on heroku
 
 const db = {};
 
-db.like = connection.import(__dirname + "/models/like.js");
-db.usersIP = connection.import(__dirname + "/models/usersIp.js");
+db.like = connection.import(path.resolve("./server/database/models/like.js"));
+db.usersIP = connection.import(path.resolve("./server/database/models/usersIp.js"));
 db.Sequelize = Sequelize;
 db.connection = connection;
 

@@ -7,8 +7,8 @@ import chalk from "chalk";
 
 import config from "./webpack.config";
 // const config = require("./webpack.config");
-import db from "./database/db";
-import * as routes from "./routes";
+import db from "./server/database/db";
+import * as routes from "./server/routes";
 
 const app = express();
 const compiler = webpack(config);
