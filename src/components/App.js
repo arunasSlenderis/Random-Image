@@ -18,7 +18,8 @@ export default class App extends Component {
       ip: "",
       likeCount: 0,
       dislikeCount: 0,
-      viewCount : 1
+      viewCount : 1,
+      title: ""
     };
 
     this.url = "https://api.imgur.com/3/gallery/random/random/";
@@ -27,7 +28,6 @@ export default class App extends Component {
     this.getinfoFromDb = this.getinfoFromDb.bind(this);
     this.increaseLikes = this.increaseLikes.bind(this);
     this.increaseDislikes = this.increaseDislikes.bind(this);
-    this.displayViews = this.displayViews.bind(this);
     this.getIP = this.getIP.bind(this);
   }
 
@@ -50,14 +50,16 @@ export default class App extends Component {
         this.setState({
           image: data.data[index].link, //index
           loading: "",
-          imageId: data.data[index].id
+          imageId: data.data[index].id,
+          title: data.data[index].title
         });
         $.when(this.getinfoFromDb(false, false)).done(data => {
+          const { likes, dislikes, views} = data;
           this.getIP();
           this.setState({
-            likeCount: data.likes,
-            dislikeCount: data.dislikes,
-            viewCount: data.views
+            likeCount: likes,
+            dislikeCount: dislikes,
+            viewCount: views
           });
         });
       } else {
@@ -68,16 +70,17 @@ export default class App extends Component {
   }
 
   getinfoFromDb(likePressed, dislikePressed) {
+    const { imageId, ip, viewCount } = this.state;
     return $.ajax({
       url: "/info",
       type: "POST",
       contentType: "application/json",
       data: JSON.stringify({
-        imageId: this.state.imageId,
-        ip: this.state.ip,
+        imageId,
+        ip,
         likePressed,
         dislikePressed,
-        views: this.state.viewCount
+        views: viewCount
       })
     });
   }
@@ -96,10 +99,6 @@ export default class App extends Component {
     });
   }
 
-  displayViews() {
-
-  }
-
   getIP() {
     $.getJSON("//api.ipify.org?format=jsonp&callback=?", ip => {
       this.setState({ ip: ip.ip });
@@ -110,20 +109,18 @@ export default class App extends Component {
     const {
       loading,
       image,
-      imageId,
       likeCount,
       dislikeCount,
-      viewCount
+      viewCount,
+      title
     } = this.state;
     return (
       <div>
         <Image
-          loading={ loading }
           image={ image }
-          imageId={ imageId }
-          getImage={ this.getImage }
         />
         <NotificationArea
+          title={ title }
           views={ viewCount }
           likes={ likeCount }
           dislikes={ dislikeCount }
@@ -131,6 +128,8 @@ export default class App extends Component {
         <Controls
           like={ this.increaseLikes }
           dislike={ this.increaseDislikes }
+          getImage={ this.getImage }
+          loading={ loading }
         />
       </div>
     );

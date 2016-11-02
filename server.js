@@ -28,6 +28,8 @@ app.use(express.static("./dist"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.all("/*", routes.corsFix);
+
 app.get("/", routes.home);
 
 app.post("/info", routes.info);

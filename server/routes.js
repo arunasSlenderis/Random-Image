@@ -3,6 +3,12 @@ import chalk from "chalk";
 
 import db from "./database/db";
 
+export const corsFix = (req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+};
+
 export const home = (req, res) => {
   res.sendFile(path.resolve("./src/index.html"));
 };
