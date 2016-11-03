@@ -1,11 +1,112 @@
+@import "../variables.scss";
+@import "../mixins.scss";
+
 .controls-container{
   clear: both;
   text-align: center;
   margin: 20px 0;
   position: relative;
-  right: 5%;
+  right: $controlsLeftMargin / 2;
 }
 
 .btn {
-  margin-left: 10%;
+  outline: none;
+}
+
+.btn-like-dislike {
+  margin-left: $controlsLeftMargin;
+  width: 65px;
+  height: 65px;
+  border-radius: 32.5px;
+}
+
+.btn-like {
+  background: url("../images/like-small-min.png");
+}
+.liked-disliked {
+  opacity: 0.5;
+}
+.btn-dislike {
+  background: url("../images/dislike-small-min.png");
+}
+
+.btn-views {
+  // background: url("../images/next-new-resized-min.jpg");
+  position: relative;
+  display: block;
+  width: 220px;
+  height: 50px;
+  border-radius: 45px;
+  margin: 22px auto;
+  right: -$controlsLeftMargin / 2;
+}
+
+.hidden {
+  display: none;
+}
+.transparent {
+  opacity: 0.4;
+}
+.nextImage {
+  position: relative;
+  right: 6px;
+  bottom: 3px;
+}
+
+.fa-spinner {
+  font-size: 40px;
+  opacity: 1;
+  position: absolute;
+  left: 90px;
+  top: 5px;
+  z-index: 999;
+  color: darken(#00a27F, 15%);
+}
+
+@include tablet {
+  .controls-container {
+    right: $controlsLefMarginTablet / 2
+  }
+  .btn-like-dislike {
+    margin-left: $controlsLefMarginTablet
+  }
+  .btn-views {
+    right: -$controlsLefMarginTablet / 2
+  }
+}
+
+@include laptop {
+  .controls-container {
+    right: $controlsLefMarginLaptop / 2
+  }
+  .btn-like-dislike {
+    margin-left: $controlsLefMarginLaptop
+  }
+  .btn-views {
+    right: -$controlsLefMarginLaptop / 2
+  }
+}
+
+@include fullHD {
+  .controls-container {
+    right: $controlsLefMarginFullHD / 2
+  }
+  .btn-like-dislike {
+    margin-left: $controlsLefMarginFullHD
+  }
+  .btn-views {
+    right: -$controlsLefMarginFullHD / 2
+  }
+}
+
+@include bigScreen {
+  .controls-container {
+    right: $controlsLefMarginBig / 2
+  }
+  .btn-like-dislike {
+    margin-left: $controlsLefMarginBig
+  }
+  .btn-views {
+    right: -$controlsLefMarginBig / 2
+  }
 }

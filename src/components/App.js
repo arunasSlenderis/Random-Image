@@ -13,13 +13,19 @@ export default class App extends Component {
 
     this.state = {
       image: "http://i.imgur.com/RRUe0Mo.png",
-      loading: "",
+      loading: {
+        hidden: "fa fa-spinner fa-spin hidden",
+        transparent: "nextImage",
+        disabled: ""
+      },
       imageId: "",
       ip: "",
       likeCount: 0,
       dislikeCount: 0,
       viewCount : 1,
-      title: ""
+      title: "",
+      liked: false,
+      disliked: false
     };
 
     this.url = "https://api.imgur.com/3/gallery/random/random/";
@@ -35,7 +41,13 @@ export default class App extends Component {
     let index = Math.floor(Math.random() * 100 / 2);
     let page = Math.floor(Math.random() * 100 / 1.69);
 
-    this.setState({ loading: "Loading..." });
+    this.setState({
+      loading: {
+        hidden: "fa fa-spinner fa-spin",
+        transparent: "nextImage transparent",
+        disabled: "disabled"
+      }
+    });
 
     $.ajax({
       url: this.url + page, //page
@@ -49,7 +61,11 @@ export default class App extends Component {
       if( ext === "png" || ext === "gif" || ext === "jpg") {
         this.setState({
           image: data.data[index].link, //index
-          loading: "",
+          loading: {
+            hidden: "fa fa-spinner fa-spin hidden",
+            transparent: "nextImage",
+            disabled: ""
+          },
           imageId: data.data[index].id,
           title: data.data[index].title
         });
@@ -63,7 +79,13 @@ export default class App extends Component {
           });
         });
       } else {
-        this.setState({ loading: "Loading..." });
+        this.setState({
+          loading: {
+            hidden: "fa fa-spinner fa-spin",
+            transparent: "nextImage transparent",
+            disabled: "disabled"
+          }
+        });
         this.getImage();
       }
     });
@@ -86,6 +108,7 @@ export default class App extends Component {
   }
 
   increaseLikes() {
+    this.setState({ liked: true });
     this.getIP();
     $.when(this.getinfoFromDb(true, false)).done(data => {
       this.setState({ likeCount: data.likes });
@@ -93,6 +116,7 @@ export default class App extends Component {
   }
 
   increaseDislikes() {
+    this.setState({ disliked: true });
     this.getIP();
     $.when(this.getinfoFromDb(false, true)).done(data => {
       this.setState({ dislikeCount: data.dislikes });
@@ -130,6 +154,7 @@ export default class App extends Component {
           dislike={ this.increaseDislikes }
           getImage={ this.getImage }
           loading={ loading }
+
         />
       </div>
     );

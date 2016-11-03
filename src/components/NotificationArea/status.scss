@@ -1,11 +1,12 @@
 $fa-font-path: '~font-awesome/fonts';
 @import '~font-awesome/scss/font-awesome';
+@import "../../mixins";
 
 .status-container {
   // border: 1px solid black;
   text-align: center;
   font-size: 20px;
-  margin: 5px 0;
+  margin: 15px 0 30px 0;
 }
 
 ul {
@@ -16,6 +17,42 @@ ul {
   li {
     display: inline-block;
     margin-left: 18%;
+  }
+}
+
+@include tablet {
+  ul {
+    right: 6%;
+  }
+  ul > li {
+    margin-left: 12%;
+  }
+}
+
+@include laptop {
+  ul {
+    right: 4%;
+  }
+  ul > li {
+    margin-left: 8%;
+  }
+}
+
+@include fullHD {
+  ul {
+    right: 2.75%;
+  }
+  ul > li {
+    margin-left: 5.5%;
+  }
+}
+
+@include bigScreen {
+  ul {
+    right: 2.1%;
+  }
+  ul > li {
+    margin-left: 4.2%;
   }
 }
 
