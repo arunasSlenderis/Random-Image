@@ -20,7 +20,7 @@ app.get("/", routes.home);
 app.post("/info", routes.info);
 
 db.connection.sync({
-  force: true
+  // force: true
 })
 .then(() => {
   app.listen(PORT, error => {
