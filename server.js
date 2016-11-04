@@ -6,7 +6,6 @@ import bodyParser from "body-parser";
 import chalk from "chalk";
 
 import config from "./webpack.config";
-// const config = require("./webpack.config");
 import db from "./server/database/db";
 import * as routes from "./server/routes";
 
