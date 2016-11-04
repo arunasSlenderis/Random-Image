@@ -26,7 +26,9 @@ export const info = (req, res) => {
     const data = {
       likes: image ? image.dataValues.likes : "0",
       dislikes: image ? image.dataValues.dislikes : "0",
-      views : image ? image.dataValues.views : "1"
+      views : image ? image.dataValues.views : "1",
+      liked: false,
+      disliked: false
     };
 
     if(!image) {
@@ -39,7 +41,8 @@ export const info = (req, res) => {
       db.usersIP.create({
         imageId,
         ip,
-        liked_disliked: false
+        liked: false,
+        disliked: false
       });
       res.send(data);
     } else {
@@ -50,10 +53,19 @@ export const info = (req, res) => {
         const imageWithIP = imagesWithIP.find(imageIP => {
           return ip === imageIP.dataValues.ip;
         });
-        if(imageWithIP.dataValues.liked_disliked === false) {
-          if(likePressed || dislikePressed) {
+        if(imageWithIP) {
+          data.liked = imageWithIP.dataValues.liked;
+          data.disliked = imageWithIP.dataValues.disliked;
+        }
+        let dislikeEvent = imageWithIP.dataValues.disliked;
+        let likeEvent = imageWithIP.dataValues.liked;
+        if(likeEvent === false || dislikeEvent === false) {
+          if(likePressed && !dislikeEvent) {
             imageWithIP.update({
-              liked_disliked: true
+              liked: true
+            })
+            .then(updatedField => {
+              data.liked = updatedField.dataValues.liked;
             });
             image.update({
               likes:
@@ -61,7 +73,21 @@ export const info = (req, res) => {
                   ?
                   image.dataValues.likes + 1
                   :
-                  image.dataValues.likes,
+                  image.dataValues.likes
+            })
+            .then(updatedField => {
+              data.likes = updatedField.dataValues.likes;
+              res.send(data);
+            });
+          }
+          if(dislikePressed && !likeEvent) {
+            imageWithIP.update({
+              disliked: true
+            })
+            .then(updatedField => {
+              data.disliked = updatedField.dataValues.disliked;
+            });
+            image.update({
               dislikes:
                 dislikePressed
                   ?
@@ -70,7 +96,6 @@ export const info = (req, res) => {
                   image.dataValues.dislikes,
             })
             .then(updatedField => {
-              data.likes = updatedField.dataValues.likes;
               data.dislikes = updatedField.dataValues.dislikes;
               res.send(data);
             });
@@ -83,6 +108,8 @@ export const info = (req, res) => {
             data.views = updatedField.dataValues.views;
             res.send(data);
           });
+        } else {
+          res.send(data);
         }
       });
     }

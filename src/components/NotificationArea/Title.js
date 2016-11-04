@@ -5,7 +5,12 @@ require("./title.scss");
 export default class Status extends Component {
   render() {
     return (
-      <span className="title">{ this.props.title }</span>
+      <span
+        className="title"
+        style={{ maxWidth: this.props.width + "px" }}
+      >
+      { this.props.title }
+      </span>
     );
   }
 }

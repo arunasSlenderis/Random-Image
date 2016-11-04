@@ -9,13 +9,15 @@ export default class Controls extends Component {
     return (
       <div className="controls-container">
         <button
-          className="btn btn-like-dislike btn-like"
-           onClick={ this.props.like }
+          className={ this.props.disableButton.likeColor }
+          onClick={ this.props.like }
+          disabled={ this.props.disableButton.disable }
         >
         </button>
         <button
-          className="btn btn-like-dislike btn-dislike"
+          className={ this.props.disableButton.dislikeColor }
           onClick={ this.props.dislike }
+          disabled={ this.props.disableButton.disable }
         >
         </button>
         <button
@@ -24,13 +26,15 @@ export default class Controls extends Component {
           disabled={ this.props.loading.disabled }
         >
           <i className={ this.props.loading.hidden } aria-hidden="true"></i>
-          <img
-            src={ require("../images/next-new-resized-min.jpg") }
-            alt="NEXT"
-            className={ this.props.loading.transparent }
-          />
+          NEXT
         </button>
       </div>
     );
   }
 }
+
+// <img
+//   src={ require("../images/next-new-resized-black-min.jpg") }
+//   alt="NEXT"
+//   className={ this.props.loading.transparent }
+// />

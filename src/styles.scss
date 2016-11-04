@@ -1,9 +1,15 @@
 @import url('https://fonts.googleapis.com/css?family=Varela+Round');
+@import "./variables.scss";
 
-body {
+html, body {
   margin: 0;
   padding: 0;
+}
+
+body {
   font-family: 'Varela Round', Helvetica, sans-serif;
+  background: $backgroundColor;
+  color: darken($fontColor, 15%);
 }
 
 ul {

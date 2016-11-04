@@ -1,6 +1,7 @@
 $fa-font-path: '~font-awesome/fonts';
 @import '~font-awesome/scss/font-awesome';
 @import "../../mixins";
+@import "../../variables";
 
 .status-container {
   // border: 1px solid black;
@@ -66,5 +67,5 @@ ul {
   color: #E57200;
 }
 .like, .dislike, .views {
-  color: black;
+  color: darken($fontColor, 10%);
 }

@@ -1,9 +1,9 @@
+@import "../variables.scss";
+
 .image-container {
   text-align: center;
-
   img {
     max-width: 100%;
-
-    /*object-fit: contain;*/
+    border-bottom: 5px solid lighten($backgroundColor, 15%);
   }
 }

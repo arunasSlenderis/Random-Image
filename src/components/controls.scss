@@ -1,5 +1,6 @@
 @import "../variables.scss";
 @import "../mixins.scss";
+@import url('https://fonts.googleapis.com/css?family=Coiny');
 
 .controls-container{
   clear: both;
@@ -31,7 +32,11 @@
 }
 
 .btn-views {
-  // background: url("../images/next-new-resized-min.jpg");
+  background: #307550;
+  background: -moz-radial-gradient(center, ellipse cover,  #307550 14%, #48dbb1 76%, #03080a 100%);
+  background: -webkit-radial-gradient(center, ellipse cover,  #307550 14%,#48dbb1 76%,#03080a 100%);
+  background: radial-gradient(ellipse at center,  #307550 14%,#48dbb1 76%,#03080a 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#307550', endColorstr='#03080a',GradientType=1 );
   position: relative;
   display: block;
   width: 220px;
@@ -39,6 +44,10 @@
   border-radius: 45px;
   margin: 22px auto;
   right: -$controlsLeftMargin / 2;
+  font-size: 40px;
+  font-family: 'Coiny', cursive;
+  letter-spacing: 8px;
+  line-height: 1;
 }
 
 .hidden {
@@ -51,6 +60,7 @@
   position: relative;
   right: 6px;
   bottom: 3px;
+  border-radius: 29px;
 }
 
 .fa-spinner {

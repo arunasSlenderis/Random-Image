@@ -19,13 +19,19 @@ export default class App extends Component {
         disabled: ""
       },
       imageId: "",
+      imageWidth: "",
       ip: "",
       likeCount: 0,
       dislikeCount: 0,
       viewCount : 1,
       title: "",
       liked: false,
-      disliked: false
+      disliked: false,
+      disableButton: {
+        disable: "",
+        likeColor: "btn btn-like-dislike btn-like",
+        dislikeColor: "btn btn-like-dislike btn-dislike"
+      }
     };
 
     this.url = "https://api.imgur.com/3/gallery/random/random/";
@@ -46,6 +52,11 @@ export default class App extends Component {
         hidden: "fa fa-spinner fa-spin",
         transparent: "nextImage transparent",
         disabled: "disabled"
+      },
+      disableButton: {
+        disable: "disabled",
+        dislikeColor: "btn btn-like-dislike btn-dislike transparent",
+        likeColor: "btn btn-like-dislike btn-like transparent"
       }
     });
 
@@ -66,17 +77,42 @@ export default class App extends Component {
             transparent: "nextImage",
             disabled: ""
           },
+          disableButton: {
+            disable: "",
+            dislikeColor: "btn btn-like-dislike btn-dislike",
+            likeColor: "btn btn-like-dislike btn-like"
+          },
           imageId: data.data[index].id,
-          title: data.data[index].title
+          title: data.data[index].title,
+          imageWidth: data.data[index].width
         });
         $.when(this.getinfoFromDb(false, false)).done(data => {
-          const { likes, dislikes, views} = data;
+          const { likes, dislikes, views, liked, disliked } = data;
           this.getIP();
           this.setState({
             likeCount: likes,
             dislikeCount: dislikes,
-            viewCount: views
+            viewCount: views,
+            liked,
+            disliked
           });
+          if(this.state.liked) {
+            this.setState({
+              disableButton: {
+                disable: "disabled",
+                likeColor: "btn btn-like-dislike btn-like transparent",
+                dislikeColor: "btn btn-like-dislike btn-dislike transparent",
+              }
+            });
+          } else if(this.state.disliked) {
+            this.setState({
+              disableButton: {
+                disable: "disabled",
+                dislikeColor: "btn btn-like-dislike btn-dislike transparent",
+                likeColor: "btn btn-like-dislike btn-like transparent"
+              }
+            });
+          }
         });
       } else {
         this.setState({
@@ -84,6 +120,11 @@ export default class App extends Component {
             hidden: "fa fa-spinner fa-spin",
             transparent: "nextImage transparent",
             disabled: "disabled"
+          },
+          disableButton: {
+            disable: "disabled",
+            dislikeColor: "btn btn-like-dislike btn-dislike transparent",
+            likeColor: "btn btn-like-dislike btn-like transparent"
           }
         });
         this.getImage();
@@ -108,18 +149,30 @@ export default class App extends Component {
   }
 
   increaseLikes() {
-    this.setState({ liked: true });
     this.getIP();
     $.when(this.getinfoFromDb(true, false)).done(data => {
-      this.setState({ likeCount: data.likes });
+      this.setState({ likeCount: data.likes, liked: data.liked });
+      this.setState({
+        disableButton: {
+          disable: "disabled",
+          likeColor: "btn btn-like-dislike btn-like transparent",
+          dislikeColor: "btn btn-like-dislike btn-dislike transparent"
+        }
+      });
     });
   }
 
   increaseDislikes() {
-    this.setState({ disliked: true });
     this.getIP();
     $.when(this.getinfoFromDb(false, true)).done(data => {
-      this.setState({ dislikeCount: data.dislikes });
+      this.setState({ dislikeCount: data.dislikes, disliked: data.disliked });
+      this.setState({
+        disableButton: {
+          disable: "disabled",
+          dislikeColor: "btn btn-like-dislike btn-dislike transparent",
+          likeColor: "btn btn-like-dislike btn-like transparent",
+        }
+      });
     });
   }
 
@@ -136,15 +189,18 @@ export default class App extends Component {
       likeCount,
       dislikeCount,
       viewCount,
-      title
+      title,
+      disableButton,
+      imageWidth
     } = this.state;
     return (
-      <div>
+      <div className="app-container">
         <Image
           image={ image }
         />
         <NotificationArea
           title={ title }
+          width={ imageWidth }
           views={ viewCount }
           likes={ likeCount }
           dislikes={ dislikeCount }
@@ -154,7 +210,7 @@ export default class App extends Component {
           dislike={ this.increaseDislikes }
           getImage={ this.getImage }
           loading={ loading }
-
+          disableButton={ disableButton }
         />
       </div>
     );

@@ -6,7 +6,10 @@ module.exports = (sequelize, DataTypes) => {
     ip: {
       type: DataTypes.STRING
     },
-    liked_disliked : {
+    liked : {
+      type: DataTypes.BOOLEAN
+    },
+    disliked : {
       type: DataTypes.BOOLEAN
     }
   });

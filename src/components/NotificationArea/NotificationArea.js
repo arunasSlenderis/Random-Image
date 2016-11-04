@@ -7,11 +7,11 @@ export default class NotificationArea extends Component {
   render() {
     return (
       <div>
-        <Title title={ this.props.title } />
+        <Title title={ this.props.title } width={ this.props.width } />
         <Status
           views={ this.props.views }
           likes={ this.props.likes }
-          dislikes={ this.props.dislikes }  
+          dislikes={ this.props.dislikes }
         />
       </div>
     );
