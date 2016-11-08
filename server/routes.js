@@ -23,12 +23,13 @@ export const info = (req, res) => {
     where: { imageId }
   })
   .then(image => {
+    // console.log("like count ", image.dataValues.likes);
     const data = {
       likes: image ? image.dataValues.likes : "0",
       dislikes: image ? image.dataValues.dislikes : "0",
-      views : image ? image.dataValues.views : "1",
-      liked: false,
-      disliked: false
+      views : image ? image.dataValues.views : 1,
+      liked: null,
+      disliked: null
     };
 
     if(!image) {
@@ -50,35 +51,54 @@ export const info = (req, res) => {
         where: { imageId }
       })
       .then(imagesWithIP => {
-        const imageWithIP = imagesWithIP.find(imageIP => {
+        let imageWithIP = imagesWithIP.find(imageIP => {
           return ip === imageIP.dataValues.ip;
         });
-        if(imageWithIP) {
-          data.liked = imageWithIP.dataValues.liked;
-          data.disliked = imageWithIP.dataValues.disliked;
+        if(!imageWithIP) {
+          db.usersIP.create({
+            imageId,
+            ip,
+            liked: data.liked ? data.liked : false,
+            disliked: data.disliked ? data.disliked : false
+          })
+          .then(newImage => {
+            image.update({
+              views: image.dataValues.views + 1
+            })
+            .then(updatedField => {
+              data.views = updatedField.dataValues.views;
+              res.send(data);
+            });
+            imageWithIP = newImage;
+          });
         }
-        let dislikeEvent = imageWithIP.dataValues.disliked;
-        let likeEvent = imageWithIP.dataValues.liked;
+        let dislikeEvent = imageWithIP || imageWithIP === false ? imageWithIP.dataValues.disliked : null;
+        let likeEvent = imageWithIP || imageWithIP === false ? imageWithIP.dataValues.liked : null;
         if(likeEvent === false || dislikeEvent === false) {
+          // console.log("like event dislike event" + data.likes);
           if(likePressed && !dislikeEvent) {
+            // console.log("likePressed " + data.likes);
             imageWithIP.update({
               liked: true
             })
             .then(updatedField => {
               data.liked = updatedField.dataValues.liked;
             });
-            image.update({
-              likes:
-                likePressed
-                  ?
-                  image.dataValues.likes + 1
-                  :
-                  image.dataValues.likes
-            })
-            .then(updatedField => {
-              data.likes = updatedField.dataValues.likes;
-              res.send(data);
-            });
+            if(likeEvent === false) {
+              // console.log("like event false" + data.likes);
+              image.update({
+                likes:
+                  likePressed
+                    ?
+                    image.dataValues.likes + 1
+                    :
+                    image.dataValues.likes
+              })
+              .then(updatedField => {
+                data.likes = updatedField.dataValues.likes;
+                res.send(data);
+              });
+            }
           }
           if(dislikePressed && !likeEvent) {
             imageWithIP.update({
@@ -87,34 +107,39 @@ export const info = (req, res) => {
             .then(updatedField => {
               data.disliked = updatedField.dataValues.disliked;
             });
-            image.update({
-              dislikes:
-                dislikePressed
-                  ?
-                  image.dataValues.dislikes + 1
-                  :
-                  image.dataValues.dislikes,
-            })
-            .then(updatedField => {
-              data.dislikes = updatedField.dataValues.dislikes;
-              res.send(data);
-            });
+            if(dislikeEvent === false) {
+              image.update({
+                dislikes:
+                  dislikePressed
+                    ?
+                    image.dataValues.dislikes + 1
+                    :
+                    image.dataValues.dislikes,
+              })
+              .then(updatedField => {
+                data.dislikes = updatedField.dataValues.dislikes;
+                res.send(data);
+              });
+            }
           }
-        } else if(!imageWithIP) {
-          image.update({
-            views: image.dataValues.views + 1
-          })
-          .then(updatedField => {
-            data.views = updatedField.dataValues.views;
+          if(!likePressed && !dislikePressed) {
+            data.liked = imageWithIP.dataValues.liked;
+            data.disliked = imageWithIP.dataValues.disliked;
             res.send(data);
-          });
-        } else {
-          res.send(data);
+          }
         }
+
+        // if(imageWithIP) {
+        //   data.liked = imageWithIP.dataValues.liked;
+        //   data.disliked = imageWithIP.dataValues.disliked;
+        //   res.send(data);
+        //   // console.log("liked: ", image.dataValues.liked);
+        // }
+
       });
     }
   })
   .catch(error => {
-    console.log(chalk.red("Error finding image: ", error));
+    console.error(chalk.red("Error finding image: ", error));
   });
 };

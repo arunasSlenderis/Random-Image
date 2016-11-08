@@ -12,6 +12,7 @@
 
 .btn {
   outline: none;
+  cursor: pointer;
 }
 
 .btn-like-dislike {
@@ -55,6 +56,7 @@
 }
 .transparent {
   opacity: 0.4;
+  cursor: not-allowed;
 }
 .nextImage {
   position: relative;
@@ -71,6 +73,7 @@
   top: 5px;
   z-index: 999;
   color: darken(#00a27F, 15%);
+  cursor: not-allowed;
 }
 
 @include tablet {

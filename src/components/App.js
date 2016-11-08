@@ -9,10 +9,10 @@ export default class App extends Component {
   constructor(props) {
     super(props);
 
-    this.getIP();
+    // this.getIP();
 
     this.state = {
-      image: "http://i.imgur.com/RRUe0Mo.png",
+      image: "",
       loading: {
         hidden: "fa fa-spinner fa-spin hidden",
         transparent: "nextImage",
@@ -43,10 +43,14 @@ export default class App extends Component {
     this.getIP = this.getIP.bind(this);
   }
 
-  getImage() {
-    let index = Math.floor(Math.random() * 100 / 2);
-    let page = Math.floor(Math.random() * 100 / 1.69);
+  componentWillMount() {
+    this.getImage();
+    this.getIP();
+  }
 
+  getImage() {
+    // let index = Math.floor(Math.random() * 100 / 2);
+    // let page = Math.floor(Math.random() * 100 / 1.69);
     this.setState({
       loading: {
         hidden: "fa fa-spinner fa-spin",
@@ -61,30 +65,39 @@ export default class App extends Component {
     });
 
     $.ajax({
-      url: this.url + page, //page
+      url: this.url + 1, //page
       dataType: "json",
       beforeSend(xhr) {
         xhr.setRequestHeader("Authorization", "Client-ID ecac85d04d4ce16");
       }
     }).done(data => {
-      const ext = data.data[index].link.slice(-3);  //getting extension
+      const ext = data.data[1].link.slice(-3);  //getting extension
 
       if( ext === "png" || ext === "gif" || ext === "jpg") {
         this.setState({
-          image: data.data[index].link, //index
+          image: data.data[1].link, //index
           loading: {
             hidden: "fa fa-spinner fa-spin hidden",
             transparent: "nextImage",
             disabled: ""
           },
-          disableButton: {
-            disable: "",
-            dislikeColor: "btn btn-like-dislike btn-dislike",
-            likeColor: "btn btn-like-dislike btn-like"
-          },
-          imageId: data.data[index].id,
-          title: data.data[index].title,
-          imageWidth: data.data[index].width
+          disableButton:
+            (this.state.liked && this.state.disliked !== true) || (this.state.disliked && this.state.liked !== true)
+              ?
+              {
+                disable: "disabled",
+                likeColor: "btn btn-like-dislike btn-like transparent",
+                dislikeColor: "btn btn-like-dislike btn-dislike transparent"
+              }
+              :
+              {
+                disable: "",
+                dislikeColor: "btn btn-like-dislike btn-dislike",
+                likeColor: "btn btn-like-dislike btn-like"
+              },
+          imageId: data.data[1].id,
+          title: data.data[1].title,
+          imageWidth: data.data[1].width
         });
         $.when(this.getinfoFromDb(false, false)).done(data => {
           const { likes, dislikes, views, liked, disliked } = data;
@@ -96,20 +109,21 @@ export default class App extends Component {
             liked,
             disliked
           });
-          if(this.state.liked) {
+          console.log("liked ", this.state.liked);
+          if((liked && liked !== null) || (disliked && disliked !== null)) {
             this.setState({
               disableButton: {
                 disable: "disabled",
                 likeColor: "btn btn-like-dislike btn-like transparent",
-                dislikeColor: "btn btn-like-dislike btn-dislike transparent",
+                dislikeColor: "btn btn-like-dislike btn-dislike transparent"
               }
             });
-          } else if(this.state.disliked) {
+          } else {
             this.setState({
               disableButton: {
-                disable: "disabled",
-                dislikeColor: "btn btn-like-dislike btn-dislike transparent",
-                likeColor: "btn btn-like-dislike btn-like transparent"
+                disable: "",
+                likeColor: "btn btn-like-dislike btn-like",
+                dislikeColor: "btn btn-like-dislike btn-dislike"
               }
             });
           }
@@ -149,36 +163,37 @@ export default class App extends Component {
   }
 
   increaseLikes() {
+    this.setState({
+      disableButton: {
+        disable: "disabled",
+        likeColor: "btn btn-like-dislike btn-like transparent",
+        dislikeColor: "btn btn-like-dislike btn-dislike transparent"
+      }
+    });
     this.getIP();
     $.when(this.getinfoFromDb(true, false)).done(data => {
       this.setState({ likeCount: data.likes, liked: data.liked });
-      this.setState({
-        disableButton: {
-          disable: "disabled",
-          likeColor: "btn btn-like-dislike btn-like transparent",
-          dislikeColor: "btn btn-like-dislike btn-dislike transparent"
-        }
-      });
     });
   }
 
   increaseDislikes() {
+    this.setState({
+      disableButton: {
+        disable: "disabled",
+        dislikeColor: "btn btn-like-dislike btn-dislike transparent",
+        likeColor: "btn btn-like-dislike btn-like transparent",
+      }
+    });
     this.getIP();
     $.when(this.getinfoFromDb(false, true)).done(data => {
       this.setState({ dislikeCount: data.dislikes, disliked: data.disliked });
-      this.setState({
-        disableButton: {
-          disable: "disabled",
-          dislikeColor: "btn btn-like-dislike btn-dislike transparent",
-          likeColor: "btn btn-like-dislike btn-like transparent",
-        }
-      });
     });
   }
 
   getIP() {
     $.getJSON("//api.ipify.org?format=jsonp&callback=?", ip => {
-      this.setState({ ip: ip.ip });
+      this.setState({ ip: "14" });
+      console.log(ip);
     });
   }
 
