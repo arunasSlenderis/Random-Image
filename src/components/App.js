@@ -51,8 +51,8 @@ export default class App extends Component {
   }
 
   getImage() {
-    // let index = Math.floor(Math.random() * 100 / 2);
-    // let page = Math.floor(Math.random() * 100 / 1.69);
+    let index = Math.floor(Math.random() * 100 / 2);
+    let page = Math.floor(Math.random() * 100 / 1.69);
     this.setState({
       loading: {
         hidden: "fa fa-spinner fa-spin",
@@ -67,17 +67,17 @@ export default class App extends Component {
     });
 
     $.ajax({
-      url: this.url + 1, //page
+      url: this.url + page, //page
       dataType: "json",
       beforeSend(xhr) {
         xhr.setRequestHeader("Authorization", "Client-ID ecac85d04d4ce16");
       }
     }).done(data => {
-      const ext = data.data[1].link.slice(-3);  //getting extension
+      const ext = data.data[index].link.slice(-3);  //getting extension
 
       if( ext === "png" || ext === "gif" || ext === "jpg") {
         this.setState({
-          image: data.data[1].link, //index
+          image: data.data[index].link, //index
           loading: {
             hidden: "fa fa-spinner fa-spin hidden",
             transparent: "nextImage",
@@ -99,9 +99,9 @@ export default class App extends Component {
                 dislikeColor: "btn btn-like-dislike btn-dislike",
                 likeColor: "btn btn-like-dislike btn-like"
               },
-          imageId: data.data[1].id,
-          title: data.data[1].title,
-          imageWidth: data.data[1].width
+          imageId: data.data[index].id,
+          title: data.data[index].title,
+          imageWidth: data.data[index].width
         });
         this.updateStatus();
       } else {
