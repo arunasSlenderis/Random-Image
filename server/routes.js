@@ -23,7 +23,6 @@ export const info = (req, res) => {
     where: { imageId }
   })
   .then(image => {
-    // console.log("like count ", image.dataValues.likes);
     const data = {
       likes: image ? image.dataValues.likes : "0",
       dislikes: image ? image.dataValues.dislikes : "0",
@@ -72,12 +71,18 @@ export const info = (req, res) => {
             imageWithIP = newImage;
           });
         }
-        let dislikeEvent = imageWithIP || imageWithIP === false ? imageWithIP.dataValues.disliked : null;
-        let likeEvent = imageWithIP || imageWithIP === false ? imageWithIP.dataValues.liked : null;
+        let dislikeEvent = imageWithIP || imageWithIP === false
+          ?
+          imageWithIP.dataValues.disliked
+          :
+          null;
+        let likeEvent = imageWithIP || imageWithIP === false
+          ?
+          imageWithIP.dataValues.liked
+          :
+          null;
         if(likeEvent === false || dislikeEvent === false) {
-          // console.log("like event dislike event" + data.likes);
           if(likePressed && !dislikeEvent) {
-            // console.log("likePressed " + data.likes);
             imageWithIP.update({
               liked: true
             })
@@ -85,7 +90,6 @@ export const info = (req, res) => {
               data.liked = updatedField.dataValues.liked;
             });
             if(likeEvent === false) {
-              // console.log("like event false" + data.likes);
               image.update({
                 likes:
                   likePressed
@@ -128,14 +132,6 @@ export const info = (req, res) => {
             res.send(data);
           }
         }
-
-        // if(imageWithIP) {
-        //   data.liked = imageWithIP.dataValues.liked;
-        //   data.disliked = imageWithIP.dataValues.disliked;
-        //   res.send(data);
-        //   // console.log("liked: ", image.dataValues.liked);
-        // }
-
       });
     }
   })

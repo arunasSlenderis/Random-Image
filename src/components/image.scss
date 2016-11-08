@@ -5,7 +5,7 @@
   text-align: center;
   img {
     max-width: 100%;
-    border-bottom: 5px solid lighten($backgroundColor, 15%);
+    box-shadow: 0 0 17px 5px lighten($backgroundColor, 55%);
   }
 }
 
