@@ -109,7 +109,7 @@ export default class App extends Component {
             liked,
             disliked
           });
-          console.log("liked ", this.state.liked);
+          // console.log("liked ", this.state.liked);
           if((liked && liked !== null) || (disliked && disliked !== null)) {
             this.setState({
               disableButton: {
@@ -192,8 +192,8 @@ export default class App extends Component {
 
   getIP() {
     $.getJSON("//api.ipify.org?format=jsonp&callback=?", ip => {
-      this.setState({ ip: "14" });
-      console.log(ip);
+      this.setState({ ip: ip.ip });
+      // console.log(ip);
     });
   }
 
