@@ -3,14 +3,29 @@
 
 .image-container {
   text-align: center;
+  position: relative;
   img {
     max-width: 100%;
     box-shadow: 0 0 17px 5px lighten($backgroundColor, 55%);
   }
 }
 
+div #image-loading {
+  position: absolute;
+  left: 50%;
+  margin-left: -20px;
+  top: 50%;
+  margin-top: -20px;
+  background: lighten(#00a27F, 20%);
+  border-radius: 25px;
+  padding: 3px;
+}
+
 @include tablet {
   .image-container {
     margin-top: 20px;
+    img {
+      max-width: 90%;
+    }
   }
 }

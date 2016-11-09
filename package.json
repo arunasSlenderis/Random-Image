@@ -55,6 +55,7 @@
     "pg-hstore": "^2.3.2",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
+    "react-easy-swipe": "0.0.5",
     "sequelize": "^3.24.3"
   }
 }

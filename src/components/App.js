@@ -1,5 +1,6 @@
 import React, { Component } from "react"; // eslint-disable-line no-unused-vars
 import $ from "jquery";
+import Swipe from "react-easy-swipe"; // eslint-disable-line no-unused-vars
 
 import Image from "./Image";  // eslint-disable-line no-unused-vars
 import NotificationArea from "./NotificationArea/NotificationArea"; // eslint-disable-line no-unused-vars
@@ -29,7 +30,8 @@ export default class App extends Component {
         disable: "",
         likeColor: "btn btn-like-dislike btn-like",
         dislikeColor: "btn btn-like-dislike btn-dislike"
-      }
+      },
+      tranparent: ""
     };
 
     this.url = "https://api.imgur.com/3/gallery/random/random/";
@@ -41,8 +43,13 @@ export default class App extends Component {
     this.getIP = this.getIP.bind(this);
     this.updateStatus = this.updateStatus.bind(this);
     this.update = this.update.bind(this);
+    this.onSwipeMove = this.onSwipeMove.bind(this);
 
     this.update();
+  }
+
+  onSwipeMove() {
+    this.setState({ transparent: "transparent" });
   }
 
   componentWillMount() {
@@ -182,7 +189,8 @@ export default class App extends Component {
         dislikeCount: dislikes,
         viewCount: views,
         liked,
-        disliked
+        disliked,
+        transparent: ""
       });
       if((liked && liked !== null) || (disliked && disliked !== null)) {
         this.setState({
@@ -219,13 +227,21 @@ export default class App extends Component {
       viewCount,
       title,
       disableButton,
-      imageWidth
+      imageWidth,
+      transparent
     } = this.state;
     return (
       <div className="app-container">
-        <Image
-          image={ image }
-        />
+        <Swipe
+          onSwipeMove={ this.onSwipeMove }
+          onSwipeEnd={ this.getImage }
+        >
+          <Image
+            image={ image }
+            loading={ loading }
+            transparent={ transparent }
+          />
+        </Swipe>
         <NotificationArea
           title={ title }
           width={ imageWidth }
