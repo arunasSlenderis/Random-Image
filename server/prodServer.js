@@ -1,6 +1,7 @@
 import "source-map-support/register";
 import express from "express";
 import bodyParser from "body-parser";
+import path from "path";
 
 import db from "./database/db";
 import * as routes from "./routes";
@@ -22,8 +23,9 @@ app.get("/", routes.home);
 app.post("/info", routes.info);
 
 app.get("/*", (req, res) => {
-  res.status(400);
-  res.render("404.jade");
+  res.sendFile(path.resolve("./404.html"));
+  // res.status(400);
+  // res.render("404.jade");
 });
 app.use((error, req, res) => {
   res.status(500);
