@@ -2,7 +2,7 @@ import React, { Component } from "react"; // eslint-disable-line no-unused-vars
 
 require("./title.scss");
 
-export default class Status extends Component {
+export default class Title extends Component {
   render() {
     return (
       <span

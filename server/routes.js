@@ -18,6 +18,8 @@ export const info = (req, res) => {
   let ip = req.body.ip;
   let likePressed = req.body.likePressed;
   let dislikePressed = req.body.dislikePressed;
+  let unlikePressed = req.body.unlikePressed;
+  let undislikePressed = req.body.undislikePressed;
 
   db.like.findOne({
     where: { imageId }
@@ -81,6 +83,39 @@ export const info = (req, res) => {
           imageWithIP.dataValues.liked
           :
           null;
+
+        if(unlikePressed && imageWithIP && imageWithIP.dataValues.liked) {
+          imageWithIP.update({
+            liked: false
+          })
+          .then(updatedField => {
+            data.liked = updatedField.dataValues.liked;
+          });
+          image.update({
+            likes: image.dataValues.likes - 1
+          })
+          .then(updatedField => {
+            data.likes = updatedField.dataValues.likes;
+            // res.send(data);
+          });
+        }
+
+        if(undislikePressed && imageWithIP && imageWithIP.dataValues.disliked) {
+          imageWithIP.update({
+            disliked: false
+          })
+          .then(updatedField => {
+            data.disliked = updatedField.dataValues.disliked;
+          });
+          image.update({
+            dislikes: image.dataValues.dislikes - 1
+          })
+          .then(updatedField => {
+            data.dislikes = updatedField.dataValues.dislikes;
+            // res.send(data);
+          });
+        }
+
         if(likeEvent === false || dislikeEvent === false) {
           if(likePressed && !dislikeEvent) {
             imageWithIP.update({

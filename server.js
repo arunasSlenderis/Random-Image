@@ -13,6 +13,8 @@ const app = express();
 const compiler = webpack(config);
 const PORT = process.env.PORT || 3000;
 
+app.set("view engine", "jade");
+
 app.use(webpackDevMiddleware(compiler, {
   noInfo: true,
   publicPath: config.output.publicPath,
@@ -32,6 +34,15 @@ app.all("/*", routes.corsFix);
 app.get("/", routes.home);
 
 app.post("/info", routes.info);
+
+app.use((req, res) => {
+  res.status(400);
+  res.render("404.jade");
+});
+app.use((error, req, res) => {
+  res.status(500);
+  res.render("500.jade", error: error);
+});
 
 db.connection.sync({
   // force: true

@@ -15,9 +15,19 @@ export default class Controls extends Component {
         >
         </button>
         <button
+          onClick={ this.props.unlike }
+          className={ this.props.disableButton.unlike }
+        >
+        </button>
+        <button
           className={ this.props.disableButton.dislikeColor }
           onClick={ this.props.dislike }
           disabled={ this.props.disableButton.disable }
+        >
+        </button>
+        <button
+          onClick={ this.props.undislike }
+          className={ this.props.disableButton.undislike }
         >
         </button>
         <button
@@ -32,9 +42,3 @@ export default class Controls extends Component {
     );
   }
 }
-
-// <img
-//   src={ require("../images/next-new-resized-black-min.jpg") }
-//   alt="NEXT"
-//   className={ this.props.loading.transparent }
-// />

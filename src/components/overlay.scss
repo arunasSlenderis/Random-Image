@@ -1,0 +1,50 @@
+@import "../variables.scss";
+
+.overlay {
+  position: absolute;
+  left: 50%;
+  margin-left: -45%;
+  margin-top: 20px;
+  width: 90%;
+  height: 90%;
+  background: $backgroundColor;
+  z-index: 99999;
+}
+
+div.overlay-text-container {
+  position: relative;
+  width: 90%;
+  height: auto;
+  top: 35%;
+  margin: 0 auto;
+  margin-top: -50px;
+
+  p {
+    text-align: justify;
+    color: #e0e3aa;
+
+    strong, em {
+      color: #60dc8d;
+    }
+
+    em {
+      font-weight: bold;
+    }
+
+    button {
+      position: relative;
+      display: block;
+      margin: 10px auto;
+      width: 100px;
+      height: 30px;
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+      background: #60dc8d;
+      font-family: Arial, sans-serif;
+      font-weight: bold;
+      font-size: 1em;
+      color: #2e4431;
+    }
+  }
+}

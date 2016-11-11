@@ -5,6 +5,7 @@ import Swipe from "react-easy-swipe"; // eslint-disable-line no-unused-vars
 import Image from "./Image";  // eslint-disable-line no-unused-vars
 import NotificationArea from "./NotificationArea/NotificationArea"; // eslint-disable-line no-unused-vars
 import Controls from "./Controls"; // eslint-disable-line no-unused-vars
+import Overlay from "./Overlay"; // eslint-disable-line no-unused-vars
 
 export default class App extends Component {
   constructor(props) {
@@ -29,9 +30,12 @@ export default class App extends Component {
       disableButton: {
         disable: "",
         likeColor: "btn btn-like-dislike btn-like",
-        dislikeColor: "btn btn-like-dislike btn-dislike"
+        dislikeColor: "btn btn-like-dislike btn-dislike",
+        unlike: "btn btn-like-dislike unlike hidden",
+        undislike: "btn btn-like-dislike undislike hidden"
       },
-      tranparent: ""
+      tranparent: "",
+      overlay: "overlay"
     };
 
     this.url = "https://api.imgur.com/3/gallery/random/random/";
@@ -39,11 +43,14 @@ export default class App extends Component {
     this.getImage = this.getImage.bind(this);
     this.getinfoFromDb = this.getinfoFromDb.bind(this);
     this.increaseLikes = this.increaseLikes.bind(this);
+    this.decreaseLikes = this.decreaseLikes.bind(this);
     this.increaseDislikes = this.increaseDislikes.bind(this);
+    this.decreaseDislikes = this.decreaseDislikes.bind(this);
     this.getIP = this.getIP.bind(this);
     this.updateStatus = this.updateStatus.bind(this);
     this.update = this.update.bind(this);
     this.onSwipeMove = this.onSwipeMove.bind(this);
+    this.removeOverlay = this.removeOverlay.bind(this);
 
     this.update();
   }
@@ -69,8 +76,10 @@ export default class App extends Component {
       disableButton: {
         disable: "disabled",
         dislikeColor: "btn btn-like-dislike btn-dislike transparent",
-        likeColor: "btn btn-like-dislike btn-like transparent"
-      }
+        likeColor: "btn btn-like-dislike btn-like transparent",
+        unlike: "btn btn-like-dislike unlike hidden",
+        undislike: "btn btn-like-dislike undislike hidden"
+      },
     });
 
     $.ajax({
@@ -97,14 +106,18 @@ export default class App extends Component {
               ?
               {
                 disable: "disabled",
-                likeColor: "btn btn-like-dislike btn-like transparent",
-                dislikeColor: "btn btn-like-dislike btn-dislike transparent"
+                likeColor: "btn btn-like-dislike btn-like hidden",
+                dislikeColor: "btn btn-like-dislike btn-dislike hidden",
+                unlike: "btn btn-like-dislike unlike",
+                undislike: "btn btn-like-dislike undislike"
               }
               :
               {
                 disable: "",
                 dislikeColor: "btn btn-like-dislike btn-dislike",
-                likeColor: "btn btn-like-dislike btn-like"
+                likeColor: "btn btn-like-dislike btn-like",
+                unlike: "btn btn-like-dislike unlike hidden",
+                undislike: "btn btn-like-dislike undislike hidden"
               },
           imageId: data.data[index].id,
           title: data.data[index].title,
@@ -120,8 +133,10 @@ export default class App extends Component {
           },
           disableButton: {
             disable: "disabled",
-            dislikeColor: "btn btn-like-dislike btn-dislike transparent",
-            likeColor: "btn btn-like-dislike btn-like transparent"
+            dislikeColor: "btn btn-like-dislike btn-dislike hidden",
+            likeColor: "btn btn-like-dislike btn-like hidden",
+            unlike: "btn btn-like-dislike unlike",
+            undislike: "btn btn-like-dislike undislike"
           }
         });
         this.getImage();
@@ -129,7 +144,7 @@ export default class App extends Component {
     });
   }
 
-  getinfoFromDb(likePressed, dislikePressed) {
+  getinfoFromDb(likePressed, dislikePressed, unlikePressed, undislikePressed) {
     const { imageId, ip, viewCount } = this.state;
     return $.ajax({
       url: "/info",
@@ -140,6 +155,8 @@ export default class App extends Component {
         ip,
         likePressed,
         dislikePressed,
+        unlikePressed,
+        undislikePressed,
         views: viewCount
       })
     });
@@ -149,12 +166,30 @@ export default class App extends Component {
     this.setState({
       disableButton: {
         disable: "disabled",
-        likeColor: "btn btn-like-dislike btn-like transparent",
-        dislikeColor: "btn btn-like-dislike btn-dislike transparent"
+        likeColor: "btn btn-like-dislike btn-like hidden",
+        dislikeColor: "btn btn-like-dislike btn-dislike transparent",
+        unlike: "btn btn-like-dislike unlike",
+        undislike: "btn btn-like-dislike undislike hidden"
       }
     });
     this.getIP();
-    $.when(this.getinfoFromDb(true, false)).done(data => {
+    $.when(this.getinfoFromDb(true, false, false, false)).done(data => {
+      this.setState({ likeCount: data.likes, liked: data.liked });
+    });
+  }
+
+  decreaseLikes() {
+    this.setState({
+      disableButton: {
+        disable: "",
+        likeColor: "btn btn-like-dislike btn-like",
+        dislikeColor: "btn btn-like-dislike btn-dislike",
+        unlike: "btn btn-like-dislike unlike hidden",
+        undislike: "btn btn-like-dislike undislike hidden"
+      }
+    });
+    this.getIP();
+    $.when(this.getinfoFromDb(false, false, true, false)).done(data => {
       this.setState({ likeCount: data.likes, liked: data.liked });
     });
   }
@@ -163,12 +198,30 @@ export default class App extends Component {
     this.setState({
       disableButton: {
         disable: "disabled",
-        dislikeColor: "btn btn-like-dislike btn-dislike transparent",
+        dislikeColor: "btn btn-like-dislike btn-dislike hidden",
         likeColor: "btn btn-like-dislike btn-like transparent",
+        unlike: "btn btn-like-dislike unlike hidden",
+        undislike: "btn btn-like-dislike undislike"
       }
     });
     this.getIP();
-    $.when(this.getinfoFromDb(false, true)).done(data => {
+    $.when(this.getinfoFromDb(false, true, false, false)).done(data => {
+      this.setState({ dislikeCount: data.dislikes, disliked: data.disliked });
+    });
+  }
+
+  decreaseDislikes() {
+    this.setState({
+      disableButton: {
+        disable: "",
+        dislikeColor: "btn btn-like-dislike btn-dislike",
+        likeColor: "btn btn-like-dislike btn-like",
+        unlike: "btn btn-like-dislike unlike hidden",
+        undislike: "btn btn-like-dislike undislike hidden"
+      }
+    });
+    this.getIP();
+    $.when(this.getinfoFromDb(false, false, false, true)).done(data => {
       this.setState({ dislikeCount: data.dislikes, disliked: data.disliked });
     });
   }
@@ -181,7 +234,7 @@ export default class App extends Component {
   }
 
   updateStatus() {
-    $.when(this.getinfoFromDb(false, false)).done(data => {
+    $.when(this.getinfoFromDb(false, false, false, false)).done(data => {
       const { likes, dislikes, views, liked, disliked } = data;
       this.getIP();
       this.setState({
@@ -196,8 +249,10 @@ export default class App extends Component {
         this.setState({
           disableButton: {
             disable: "disabled",
-            likeColor: "btn btn-like-dislike btn-like transparent",
-            dislikeColor: "btn btn-like-dislike btn-dislike transparent"
+            likeColor: "btn btn-like-dislike btn-like hidden",
+            dislikeColor: "btn btn-like-dislike btn-dislike hidden",
+            unlike: "btn btn-like-dislike unlike",
+            undislike: "btn btn-like-dislike undislike"
           }
         });
       } else {
@@ -205,7 +260,9 @@ export default class App extends Component {
           disableButton: {
             disable: "",
             likeColor: "btn btn-like-dislike btn-like",
-            dislikeColor: "btn btn-like-dislike btn-dislike"
+            dislikeColor: "btn btn-like-dislike btn-dislike",
+            unlike: "btn btn-like-dislike unlike hidden",
+            undislike: "btn btn-like-dislike undislike hidden"
           }
         });
       }
@@ -216,6 +273,10 @@ export default class App extends Component {
     setInterval(() => {
       this.updateStatus();
     }, 4000);
+  }
+
+  removeOverlay() {
+    this.setState({ overlay: "hidden"});
   }
 
   render() {
@@ -232,6 +293,10 @@ export default class App extends Component {
     } = this.state;
     return (
       <div className="app-container">
+        <Overlay
+          removeOverlay={ this.removeOverlay }
+          overlay={ this.state.overlay }
+        />
         <Swipe
           onSwipeMove={ this.onSwipeMove }
           onSwipeEnd={ this.getImage }
@@ -251,7 +316,9 @@ export default class App extends Component {
         />
         <Controls
           like={ this.increaseLikes }
+          unlike={ this.decreaseLikes }
           dislike={ this.increaseDislikes }
+          undislike={ this.decreaseDislikes }
           getImage={ this.getImage }
           loading={ loading }
           disableButton={ disableButton }
