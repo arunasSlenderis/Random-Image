@@ -21,7 +21,7 @@ app.get("/", routes.home);
 
 app.post("/info", routes.info);
 
-app.use((req, res) => {
+app.get("/*", (req, res) => {
   // res.status(400);
   // res.render("404.jade");
   res.send("404 not found", 404);
