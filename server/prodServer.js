@@ -24,12 +24,6 @@ app.post("/info", routes.info);
 
 app.get("/*", (req, res) => {
   res.redirect("404.html");
-  // res.status(400);
-  // res.render("404.jade");
-});
-app.use((error, req, res) => {
-  res.status(500);
-  res.render("500.jade", error: error);
 });
 
 db.connection.sync({
